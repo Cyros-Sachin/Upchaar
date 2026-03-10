@@ -16,6 +16,7 @@ export default function Onboarding() {
   const [isLoading, setIsLoading] = useState(true);
   const [onboardingData, setOnboardingData] = useState<OnboardingResponse | null>(null);
   const [error, setError] = useState("");
+  const [expandedAnalysis, setExpandedAnalysis] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -84,30 +85,33 @@ export default function Onboarding() {
     );
   }
 
-  if (!firstDay || !weekPlan?.week) {
-    return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
-        <Card className="border border-white/10 bg-black/40 backdrop-blur-xl p-8 max-w-md">
-          <h2 className="text-xl font-semibold text-white mb-4">Plan Ready!</h2>
-          <p className="text-muted-foreground mb-4">Your health analysis and weekly plan have been generated.</p>
-          <div className="p-4 bg-white/5 rounded-lg mb-6">
-            <h3 className="font-semibold text-white mb-3">Your Analysis:</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{onboardingData.analysis}</p>
-          </div>
-          <Button
-            onClick={() => navigate("/")}
-            className="w-full bg-gradient-to-r from-primary to-accent text-white"
-          >
-            Go to Dashboard
-          </Button>
-        </Card>
-      </div>
-    );
-  }
-
   // Safely get plan data - it comes directly from the API as an object
   const weekPlan = onboardingData.plan;
   const firstDay = weekPlan?.week?.[0];
+
+  // Parse health analysis into structured insights
+  const analysisLines = onboardingData.analysis
+    ?.split('\n')
+    .filter((line: string) => line.trim())
+    .map((line: string) => line.trim()) || [];
+
+  const sections = [
+    {
+      title: "Current Health Status",
+      icon: "💪",
+      content: analysisLines[0] || "Analyzing your health profile..."
+    },
+    {
+      title: "Opportunities for Improvement",
+      icon: "🎯",
+      content: analysisLines[1] || "Identifying growth areas..."
+    },
+    {
+      title: "Personalized Recommendations",
+      icon: "⭐",
+      content: analysisLines[2] || "Building your custom recommendations..."
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
@@ -137,19 +141,68 @@ export default function Onboarding() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-8"
+          className="mb-12"
         >
-          <Card className="border border-white/10 bg-black/40 backdrop-blur-xl p-8">
-            <div className="flex items-start gap-3 mb-4">
-              <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
-              <h2 className="text-2xl font-semibold text-white">Your Health Analysis</h2>
-            </div>
-            <div className="prose prose-invert max-w-none">
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                {onboardingData.analysis}
-              </p>
-            </div>
-          </Card>
+          <h2 className="text-2xl font-semibold text-white mb-6 flex items-center gap-2">
+            <CheckCircle className="w-6 h-6 text-accent" />
+            Your Health Analysis
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {sections.map((section, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 + idx * 0.1 }}
+                whileHover={{ y: -4 }}
+                className="group cursor-default"
+              >
+                <Card className="border border-white/10 bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-xl p-6 h-full hover:border-primary/50 transition-colors duration-300">
+                  <div className="text-3xl mb-3">{section.icon}</div>
+                  <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-primary transition-colors">
+                    {section.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed text-sm">
+                    {section.content}
+                  </p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Full analysis button */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex justify-center"
+          >
+            <Button
+              onClick={() => setExpandedAnalysis(!expandedAnalysis)}
+              variant="outline"
+              className="border-white/20 text-muted-foreground hover:text-foreground hover:border-primary/50"
+            >
+              {expandedAnalysis ? "Hide" : "Show"} Full Analysis
+            </Button>
+          </motion.div>
+
+          {/* Expanded analysis */}
+          {expandedAnalysis && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-6"
+            >
+              <Card className="border border-primary/20 bg-gradient-to-r from-primary/10 via-transparent to-accent/10 backdrop-blur-xl p-8">
+                <h3 className="text-xl font-semibold text-white mb-4">Complete Health Analysis</h3>
+                <div className="space-y-4 text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                  {onboardingData.analysis}
+                </div>
+              </Card>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Weekly Plan Preview */}
