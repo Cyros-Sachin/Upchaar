@@ -30,7 +30,7 @@ export function Layout({ children }: { children: ReactNode }) {
       {/* Sidebar (Desktop) */}
       <nav className="hidden md:flex flex-col w-72 bg-black/60 border-r border-white/5 p-6 gap-2 backdrop-blur-md">
         <div className="flex items-center gap-3 mb-10 px-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-accent to-secondary flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.5)] animate-pulse">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-accent to-secondary flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.5)]">
             <Activity className="text-white w-6 h-6" />
           </div>
           <h1 className="text-2xl font-display font-black tracking-tighter text-white italic">Upchaar</h1>

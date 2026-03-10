@@ -74,13 +74,43 @@ export default function Onboarding() {
   }
 
   if (!onboardingData) {
-    return null;
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
+        <Card className="border border-white/10 bg-black/40 backdrop-blur-xl p-8 max-w-md">
+          <h2 className="text-xl font-semibold text-white mb-4">Loading...</h2>
+          <p className="text-muted-foreground">Your personalized plan is being prepared.</p>
+        </Card>
+      </div>
+    );
   }
 
-  const firstDay = onboardingData.plan?.week?.[0];
+  if (!firstDay || !weekPlan?.week) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
+        <Card className="border border-white/10 bg-black/40 backdrop-blur-xl p-8 max-w-md">
+          <h2 className="text-xl font-semibold text-white mb-4">Plan Ready!</h2>
+          <p className="text-muted-foreground mb-4">Your health analysis and weekly plan have been generated.</p>
+          <div className="p-4 bg-white/5 rounded-lg mb-6">
+            <h3 className="font-semibold text-white mb-3">Your Analysis:</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{onboardingData.analysis}</p>
+          </div>
+          <Button
+            onClick={() => navigate("/")}
+            className="w-full bg-gradient-to-r from-primary to-accent text-white"
+          >
+            Go to Dashboard
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  // Safely get plan data - it comes directly from the API as an object
+  const weekPlan = onboardingData.plan;
+  const firstDay = weekPlan?.week?.[0];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/20 rounded-full blur-[128px]" />
