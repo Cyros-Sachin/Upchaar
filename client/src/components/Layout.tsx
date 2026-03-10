@@ -1,3 +1,5 @@
+'use client';
+
 import { Link, useLocation } from "wouter";
 import { Home, User, Target, Activity, Trophy, BarChart2, Calculator, LogOut } from "lucide-react";
 import { ReactNode } from "react";
