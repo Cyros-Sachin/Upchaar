@@ -64,6 +64,7 @@ export default function Profile() {
       gender,
       healthIssues: healthIssues || null,
     };
+    console.log("Updating profile with data:", data);
     try {
       const res = await fetch("/api/users/me", {
         method: "PUT",
