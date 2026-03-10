@@ -53,3 +53,34 @@ export type Meal = typeof meals.$inferSelect;
 export type InsertMeal = z.infer<typeof insertMealSchema>;
 
 export type UpdateUserRequest = Partial<InsertUser>;
+
+// Auth Request/Response Types
+export interface AuthRequest {
+  username: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: {
+    id: number;
+    username: string;
+    age?: number | null;
+    weight?: number | null;
+    height?: number | null;
+    goal?: string | null;
+    activityLevel?: string | null;
+    dietPreference?: string | null;
+    gender?: string | null;
+    healthIssues?: string | null;
+  };
+}
+
+export interface OnboardingRequest {
+  userId: number;
+}
+
+export interface OnboardingResponse {
+  analysis: string;
+  plan: any;
+}

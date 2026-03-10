@@ -1,6 +1,8 @@
 import { Link, useLocation } from "wouter";
-import { Home, User, Target, Activity, Trophy, BarChart2, Calculator } from "lucide-react";
+import { Home, User, Target, Activity, Trophy, BarChart2, Calculator, LogOut } from "lucide-react";
 import { ReactNode } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { href: "/", icon: Home, label: "Home" },
@@ -13,7 +15,13 @@ const navItems = [
 ];
 
 export function Layout({ children }: { children: ReactNode }) {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row font-sans">
@@ -45,6 +53,23 @@ export function Layout({ children }: { children: ReactNode }) {
             );
           })}
         </div>
+
+        {/* User section */}
+        {user && (
+          <div className="border-t border-white/10 pt-4 mt-auto">
+            <div className="px-4 py-3 rounded-lg bg-white/5 mb-3">
+              <p className="text-sm text-muted-foreground">Signed in as</p>
+              <p className="text-sm font-semibold text-white">{user.username}</p>
+            </div>
+            <Button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-2 bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/30 border"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
+          </div>
+        )}
       </nav>
 
       {/* Main Content */}

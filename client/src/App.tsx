@@ -3,6 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/hooks/use-auth";
 import NotFound from "@/pages/not-found";
 
 import Home from "./pages/Home";
@@ -12,10 +13,16 @@ import Nutrition from "./pages/Nutrition";
 import Challenges from "./pages/Challenges";
 import Progress from "./pages/Progress";
 import Calculator from "./pages/Calculator";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Onboarding from "./pages/Onboarding";
 
 function Router() {
   return (
     <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
+      <Route path="/onboarding" component={Onboarding} />
       <Route path="/" component={Home} />
       <Route path="/profile" component={Profile} />
       <Route path="/plan" component={Plan} />
@@ -32,8 +39,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Router />
+        <AuthProvider>
+          <Toaster />
+          <Router />
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
